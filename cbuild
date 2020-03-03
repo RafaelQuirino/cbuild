@@ -246,6 +246,8 @@ if [ ! $NUMARGS == 0 ]; then
 	fi
 fi
 
+# TABS CORRECTED UNTIL HERE
+
 if [ $DEBUG == 1 ]; then
     echo "---"
     echo "ARGUMENTS:"
