@@ -543,8 +543,9 @@ $(OBJDIR)/%.c.o: $(SRCDIR)/%.c
 	x=$$(($$x+1)); \
 	echo $$x > $(PROGFILE); \
 	max=$(TOTAL); \
-	format=$$(echo "$$max" | awk '{print length}'); \
-	printf "\e[1m[%0$${format}d/$(TOTAL)] \e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
+	format=$$(echo "$$max" | awk '{print length}');
+	@#printf "\e[1m[%0$${format}d/$(TOTAL)] \e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
+	printf "\e[1m\e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
 	@printf "$(CC) -c $< -o $@ $(CFLAGS) $(COMP_FLAGS)\n\n" >> $(LOGFILE)
 	$(VERBOSE)$(CC) -c $< -o $@ $(CFLAGS) $(COMP_FLAGS)
 	@$(NEWLINE)
@@ -555,8 +556,9 @@ $(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp
 	x=$$(($$x+1)); \
 	echo $$x > $(PROGFILE); \
 	max=$(TOTAL); \
-	format=$$(echo "$$max" | awk '{print length}'); \
-	printf "\e[1m[%0$${format}d/$(TOTAL)] \e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
+	format=$$(echo "$$max" | awk '{print length}');
+	@#printf "\e[1m[%0$${format}d/$(TOTAL)] \e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
+	printf "\e[1m\e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
 	@printf "$(CXX) -c $< -o $@ $(CXXFLAGS) $(COMP_FLAGS)\n\n" >> $(LOGFILE)
 	$(VERBOSE)$(CXX) -c $< -o $@ $(CXXFLAGS) $(COMP_FLAGS)
 	@$(NEWLINE)
@@ -567,8 +569,9 @@ $(OBJDIR)/%.cu.o: $(SRCDIR)/%.cu
 	x=$$(($$x+1)); \
 	echo $$x > $(PROGFILE); \
 	max=$(TOTAL); \
-	format=$$(echo "$$max" | awk '{print length}'); \
-	printf "\e[1m[%0$${format}d/$(TOTAL)] \e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
+	format=$$(echo "$$max" | awk '{print length}');
+	@#printf "\e[1m[%0$${format}d/$(TOTAL)] \e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
+	printf "\e[1m\e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
 	@printf "$(NVCC) -c $< -o $@ $(NVCCFLAGS) $(COMP_FLAGS)\n\n" >> $(LOGFILE)
 	$(VERBOSE)$(NVCC) -c $< -o $@ $(NVCCFLAGS) $(COMP_FLAGS)
 	@$(NEWLINE)
