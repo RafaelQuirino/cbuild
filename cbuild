@@ -107,9 +107,9 @@ ARG_CUDA="false"
 ARG_CUDA_FLAGS=""
 
 if [ ! $NUMARGS == 0 ]; then
-    SRCPATHFLAG=1
-    COUNT=$((1))
-    for var in "$@"; do
+	SRCPATHFLAG=1
+	COUNT=$((1))
+	for var in "$@"; do
 		if [[ $var == "$HELP_FLAG" ]]; then
 			printf "Usage: cbuild [proj-root-dir] [options]\n"
 			printf "    \"proj-root-dir\"       "
@@ -123,17 +123,17 @@ if [ ! $NUMARGS == 0 ]; then
 			printf "Display debug information (for cbuild development).\n"
 			printf "    $VERBOSE_FLAG             "
 			printf "Display compilation and linkage commands.\n"
-            printf "    $C_COMP_FLAG<CC>         "
-            printf "Sets the C compiler to be used. Defaults do \"$C_COMP_DEFAULT\".\n"
-            printf "    $CPP_COMP_FLAG<CXX>      "
-            printf "Sets the C++ compiler to be used. Defaults do \"$CPP_COMP_DEFAULT\".\n"
-            printf "    $CUDA_COMP_FLAG<NVCC>    "
-            printf "Sets the CUDA compiler to be used. Defaults do \"$CUDA_COMP_DEFAULT\".\n"
-            printf "    $LINK_CMD_FLAG<LINKCMD>  "
-            printf "Sets the linkage command to be used. Defaults do \"$LINK_CMD_DEFAULT\".\n"
+			printf "    $C_COMP_FLAG<CC>         "
+			printf "Sets the C compiler to be used. Defaults do \"$C_COMP_DEFAULT\".\n"
+			printf "    $CPP_COMP_FLAG<CXX>      "
+			printf "Sets the C++ compiler to be used. Defaults do \"$CPP_COMP_DEFAULT\".\n"
+			printf "    $CUDA_COMP_FLAG<NVCC>    "
+			printf "Sets the CUDA compiler to be used. Defaults do \"$CUDA_COMP_DEFAULT\".\n"
+			printf "    $LINK_CMD_FLAG<LINKCMD>  "
+			printf "Sets the linkage command to be used. Defaults do \"$LINK_CMD_DEFAULT\".\n"
 			printf "    $FLAGS<flags>       "
 			printf "String with the flags to be used in both compilation and linkage commands.\n"
-            printf "    $COMP_FLAGS<flags>  "
+			printf "    $COMP_FLAGS<flags>  "
 			printf "String with the flags to be used in compilation commands only.\n"
 			printf "    $LINK_FLAGS<flags>  "
 			printf "String with the flags to be used in linkage commands only.\n"
@@ -146,105 +146,105 @@ if [ ! $NUMARGS == 0 ]; then
 			printf "    $SCRIPT_FLAG<name>       "
 			printf "Name of the build script to be generated. Not generated if empty.\n"
 			exit
-        fi
-        if [[ $var == "$CUDA_FLAG" ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            ARG_CUDA="true"
-        fi
-        if [[ $var == "$DEBUG_FLAG" ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            DEBUG=1
-        fi
-        if [[ $var == "$VERBOSE_FLAG" ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            VERBOSE=""
+		fi
+		if [[ $var == "$CUDA_FLAG" ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			ARG_CUDA="true"
+		fi
+		if [[ $var == "$DEBUG_FLAG" ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			DEBUG=1
+		fi
+		if [[ $var == "$VERBOSE_FLAG" ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			VERBOSE=""
 			NEWLINE="printf \"\n\""
-        fi
-        if [[ $var == "$C_COMP_FLAG"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            C_COMP=$(echo $var | cut -d'=' -f 2)
-        fi
-        if [[ $var == "$CPP_COMP_FLAG"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            CPP_COMP=$(echo $var | cut -d'=' -f 2)
-        fi
-        if [[ $var == "$CUDA_COMP_FLAG"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            CUDA_COMP=$(echo $var | cut -d'=' -f 2)
-        fi
-        if [[ $var == "$LINK_CMD_FLAG"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            LINK_CMD=$(echo $var | cut -d'=' -f 2)
-        fi
-        if [[ $var == "$FLAGS"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            ARG_FLAGS=$(echo $var | cut -d'=' -f 2)
-        fi
-        if [[ $var == "$COMP_FLAGS"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            ARG_COMP_FLAGS=$(echo $var | cut -d'=' -f 2)
-        fi
-        if [[ $var == "$LINK_FLAGS"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            ARG_LINK_FLAGS=$(echo $var | cut -d'=' -f 2)
-        fi
-        if [[ $var == "$SCRIPT_FLAG"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
-            ARG_SCRIPT_FLAG=$(echo $var | cut -d'=' -f 2)
-        fi
+		fi
+		if [[ $var == "$C_COMP_FLAG"* ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			C_COMP=$(echo $var | cut -d'=' -f 2)
+		fi
+		if [[ $var == "$CPP_COMP_FLAG"* ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			CPP_COMP=$(echo $var | cut -d'=' -f 2)
+		fi
+		if [[ $var == "$CUDA_COMP_FLAG"* ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			CUDA_COMP=$(echo $var | cut -d'=' -f 2)
+		fi
+		if [[ $var == "$LINK_CMD_FLAG"* ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			LINK_CMD=$(echo $var | cut -d'=' -f 2)
+		fi
+		if [[ $var == "$FLAGS"* ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			ARG_FLAGS=$(echo $var | cut -d'=' -f 2)
+		fi
+		if [[ $var == "$COMP_FLAGS"* ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			ARG_COMP_FLAGS=$(echo $var | cut -d'=' -f 2)
+		fi
+		if [[ $var == "$LINK_FLAGS"* ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			ARG_LINK_FLAGS=$(echo $var | cut -d'=' -f 2)
+		fi
+		if [[ $var == "$SCRIPT_FLAG"* ]]; then
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
+			ARG_SCRIPT_FLAG=$(echo $var | cut -d'=' -f 2)
+		fi
 		if [[ $var == "$CBUILD_FLAG"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
 			firstString=$(echo $var | cut -d'=' -f 2)
 			secondString="$HOME"
 			CBUILD="${firstString/\~/$secondString}"
-        fi
+		fi
 		if [[ $var == "$CUDA_PATH_FLAG"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
 			CUDA_PATH=$(echo $var | cut -d'=' -f 2)
 			ARG_CUDA="true"
-        fi
+		fi
 		if [[ $var == "$CUDA_FLAGS"* ]]; then
-            if [ $COUNT -eq 1 ]; then
-                SRCPATHFLAG=0
-            fi
+			if [ $COUNT -eq 1 ]; then
+				SRCPATHFLAG=0
+			fi
 			ARG_CUDA_FLAGS=$(echo $var | cut -d'=' -f 2)
 			ARG_CUDA="true"
-        fi
-        COUNT=$(($COUNT+1))
-    done # for var in "$@"; do
+		fi
+		COUNT=$(($COUNT+1))
+	done # for var in "$@"; do
 
 	if [ $SRCPATHFLAG == 1 ]; then
 		firstString="$1"
 		secondString="$HOME"
 		SRCPATH="${firstString/\~/$secondString}"
-    fi
-fi 
+	fi
+fi
 
 if [ $DEBUG == 1 ]; then
     echo "---"
