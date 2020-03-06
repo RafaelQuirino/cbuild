@@ -499,6 +499,26 @@ endif
 
 SHELL=/bin/bash
 
+#------------------------------------------------------------------------------
+# Trying to make a progress log
+#------------------------------------------------------------------------------
+ifneq ($(words $(MAKECMDGOALS)),1) # if no argument was given to make...
+.DEFAULT_GOAL = all # set the default goal to all
+%:                   # define a last resort default rule
+	@$(MAKE) $@ --no-print-directory -rRf $(firstword $(MAKEFILE_LIST)) # recursive make call, 
+else
+ifndef ECHO
+T := $(shell $(MAKE) $(MAKECMDGOALS) --no-print-directory \
+	-nrRf $(firstword $(MAKEFILE_LIST)) \
+	ECHO="COUNTTHIS" | grep -c "COUNTTHIS")
+N := x
+C = $(words $N)$(eval N := x $N)
+ECHO = echo -ne "[`expr $C '*' 100 / $T`%]"
+endif
+
+.PHONY: all clean $(CBUILD_TARGET)
+#------------------------------------------------------------------------------
+
 # Compilers
 CC   := $(C_COMP)
 CXX  := $(CPP_COMP)
@@ -533,64 +553,39 @@ CXXFLAGS  += $(COMMONFLAGS) $(INCLUDES) $(LIB_COMMON) -std=c++0x
 NVCCFLAGS += $(COMMONFLAGS) $(FLAGS_CUDA) $(INCLUDES_CUDA) $(LIB_CUDA) -std=c++11
 
 LOGFILE  = "CBuild.log"
-PROGFILE = "CBuild.progress"
-
-.PHONY: all $(CBUILD_TARGET)
 
 # Compile .c files
 $(OBJDIR)/%.c.o: $(SRCDIR)/%.c
-	@x=$$(cat $(PROGFILE)); \
-	x=$$(($$x+1)); \
-	echo $$x > $(PROGFILE); \
-	max=$(TOTAL); \
-	format=$$(echo "$$max" | awk '{print length}');
-	@#printf "\e[1m[%0$${format}d/$(TOTAL)] \e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
-	@printf "\e[1m\e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
+	@$(ECHO) "\e[1m\e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n";
 	@printf "$(CC) -c $< -o $@ $(CFLAGS) $(COMP_FLAGS)\n\n" >> $(LOGFILE)
 	$(VERBOSE)$(CC) -c $< -o $@ $(CFLAGS) $(COMP_FLAGS)
 	@$(NEWLINE)
 
 # Compile .cpp files
 $(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp
-	@x=$$(cat $(PROGFILE)); \
-	x=$$(($$x+1)); \
-	echo $$x > $(PROGFILE); \
-	max=$(TOTAL); \
-	format=$$(echo "$$max" | awk '{print length}');
-	@#printf "\e[1m[%0$${format}d/$(TOTAL)] \e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
-	@printf "\e[1m\e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
+	@$(ECHO) "\e[1m\e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n";
 	@printf "$(CXX) -c $< -o $@ $(CXXFLAGS) $(COMP_FLAGS)\n\n" >> $(LOGFILE)
 	$(VERBOSE)$(CXX) -c $< -o $@ $(CXXFLAGS) $(COMP_FLAGS)
 	@$(NEWLINE)
 
 # Compile .cu files
 $(OBJDIR)/%.cu.o: $(SRCDIR)/%.cu
-	@x=$$(cat $(PROGFILE)); \
-	x=$$(($$x+1)); \
-	echo $$x > $(PROGFILE); \
-	max=$(TOTAL); \
-	format=$$(echo "$$max" | awk '{print length}');
-	@#printf "\e[1m[%0$${format}d/$(TOTAL)] \e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
-	@printf "\e[1m\e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n" "$$x";
+	@$(ECHO) "\e[1m\e[95mCOMPILING \033[0m$(@:obj/%.o=%) \e[1m\e[95mINTO \e[96m$(CBUILD)/$@\033[0m\n";
 	@printf "$(NVCC) -c $< -o $@ $(NVCCFLAGS) $(COMP_FLAGS)\n\n" >> $(LOGFILE)
 	$(VERBOSE)$(NVCC) -c $< -o $@ $(NVCCFLAGS) $(COMP_FLAGS)
 	@$(NEWLINE)
 
 # Main rule
+# all: $(APPS) $(CBUILD_TARGET) $(shell $(ECHO) "TEST")
 all: $(APPS) $(CBUILD_TARGET)
+	@echo > /dev/null
 
 # Cases with no source with main function
 $(CBUILD_TARGET): $(addprefix obj/,$(OBJS))
 
 # Create executables
 $(APPS): %: $(addprefix $(OBJDIR)/,$(OBJS))
-	@x=$$(cat $(PROGFILE)); \
-	x=$$(($$x+1)); \
-	echo $$x > $(PROGFILE); \
-	max=$(TOTAL); \
-	format=$$(echo "$$max" | awk '{print length}'); \
-	printf "\e[1m\e[95mLINKING \e[1m\e[95mEXECUTABLE \e[92m$@\033[0m\n" "$$x";
-	@#printf "\e[1m[%0$${format}d/$(TOTAL)] \e[95mLINKING \e[1m\e[95mEXECUTABLE \e[92m$@\033[0m\n" "$$x";
+	@$(ECHO) "\e[1m\e[95mLINKING \e[1m\e[95mEXECUTABLE \e[92m$@\033[0m\n";
 	@x="$@"; \
 	y="$${x/.bin/.o}"; \
 	mainobj="$${y/$(BINDIR)\//$(OBJDIR)\/}"; \
@@ -599,6 +594,7 @@ $(APPS): %: $(addprefix $(OBJDIR)/,$(OBJS))
 	$(VERBOSE)$(LINK) -o $@ $$(echo .cbuild.app) $(addprefix obj/,$(OBJS_NOMAIN)) $(LINKFLAGS) $(LINK_FLAGS);
 	@rm .cbuild.app
 	@$(NEWLINE)
+endif
 EOF
 
 #-------------------------------------------------------------------------------
@@ -618,18 +614,14 @@ echo "$MKCODE" > $BLD/Makefile
 
 #-------------------------------------------------------------------------------
 
-#echo -e "\033[0m\e[1m\nBUILDING FROM \n  <- \e[94m$ABSSRC/\033[0m"
-#echo ""
-
-# Creating progress file
-echo "0" > $BLD/CBuild.progress
+# echo -e "\033[0m\e[1m\nBUILDING FROM  <- \e[94m$ABSSRC/\033[0m\n"
 
 # Make arguments
 X1=$BIN
 X2=$ABSSRC
 X3=$OBJ
 X4=$OBJS
-X5=$APPS #$EXECS
+X5=$APPS
 X6=$OBJS_NOMAIN
 X7=$INCLUDES
 X8=$ARG_FLAGS
@@ -650,10 +642,14 @@ X22=$LINK_CMD
 
 # Enter Cbuild directory and call make with arguments
 cd $BLD
-BIN=$X1 SRC=$X2 OBJ=$X3 OBJS=$X4 EXECS=$X5 OBJS_NOMAIN=$X6 INC=$X7 ARGFLAG=$X8 \
+#-------------------------------------------------------------------------------------------------
+# make
+#-------------------------------------------------------------------------------------------------
+MAKEOUTPUT=$(BIN=$X1 SRC=$X2 OBJ=$X3 OBJS=$X4 EXECS=$X5 OBJS_NOMAIN=$X6 INC=$X7 ARGFLAG=$X8 \
 ARGCOMP=$X9 ARGLINK=$X10 CUDA=$X11 CBUILD=$X12 DEB=$X13 VERB=$X14 NL=$X15 OBJECTS=$X16 \
 CUDAPATH=$X17 CUDAFLAGS=$X18 CCOMP=$X19 CPPCOMP=$X20 CUDACOMP=$X21 LINKCMD=$X22 \
-make
+make 2>&1 | tee /dev/tty)
+#-------------------------------------------------------------------------------------------------
 cd ..
 
 # If "--script=" was set
@@ -721,7 +717,9 @@ if [ ! -z $ARG_SCRIPT_FLAG ]; then
     chmod +x $ABSSRC/$ARG_SCRIPT_FLAG
 fi
 
-BUILDDIR=$(realpath $BLD)
-echo -e "\033[0m\e[1m\nBUILT INTO \n  -> \e[94m$BUILDDIR/\033[0m\n"
-
+if [ -z "$MAKEOUTPUT" ]; then
+	echo -e "\033[0m\e[1mAlready up-to-date."
+else
+	echo -e "\033[0m\e[1m\nBUILT INTO -> \e[94m$(realpath $BLD)/\033[0m\n"
+fi
 #-------------------------------------------------------------------------------
